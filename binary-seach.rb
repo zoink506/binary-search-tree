@@ -94,28 +94,104 @@ class Tree
     #   - Check if it is a leaf, one child or two children
     #   - Perform according to cases above
 
-    
+    if value == node.data
+      # Value to delete has been found
+      puts "Found node for delete(#{value}): #{node.data}"
+      return amount_of_children(node)
 
+    elsif value > node.data
+      # Go right to find value to delete
+      puts "Going right at #{node.data}"
+      rightnode = delete(value, node.right)
+      puts "current node: #{node.data}, rightnode: #{rightnode}"
+
+      if rightnode == 0
+        # 0 Children on node to the right
+        node.right = nil
+
+      elsif rightnode == 1
+        # 1 Child on node to the right, determine whether it is on the left or right
+        if !node.right.left.nil?
+          node.left = node.right.left
+        elsif !node.right.right.nil?
+          node.right = node.right.right
+        end
+
+      elsif rightnode == 2
+        # 2 Children on node to the right
+        largest_value = find_next_largest(node.right.right)
+        puts "largest_value: #{largest_value}, data: #{largest_value.data}"
+        node.right.data = largest_value.data
+
+      end
+
+    elsif value < node.data
+      # Go left to find value to delete
+      puts "Going left at #{node.data}"
+      leftnode = delete(value, node.left)
+      puts "current node: #{node.data}, leftnode: #{leftnode}"
+
+      if leftnode == 0
+        # 0 Children on node to the left
+        node.left = nil
+
+      elsif leftnode == 1
+        # 1 Child on node to the left
+        if !node.left.left.nil?
+          node.left = node.left.left
+        elsif !node.left.right.nil?
+          node.left = node.left.right
+        end
+
+      elsif leftnode == 2
+        # 2 Children on node to the left
+        largest_value = find_next_largest(node.left.right)
+        node.left.data = largest_value.data
+
+      end
+
+    end
+  end
+
+  def find_next_largest(node)
+    # Keep recursing left until no left branch is found
+    if node.left.nil?
+      self.delete(node.data)
+      return node
+    else
+      find_next_largest(node.left)
+    end
+  end
+
+  def amount_of_children(node)
+    if node.left.nil? && node.right.nil?
+      # The node to delete has 0 children
+      puts "#{node.data} has 0 children"
+      return 0
+
+    elsif !node.left.nil? && !node.right.nil?
+      # The node 2 children
+      puts "#{node.data} has 2 children"
+      return 2
+
+    elsif node.left.nil? || node.right.nil?
+      # The node has 1 child, either left or right
+      puts "#{node.data} has 1 child"
+      return 1
+
+    end
+  end
 end
 
 binary_tree = Tree.new([2, 4, 6, 8, 10, 12, 14])
 binary_tree.insert(13)
 binary_tree.insert(15)
-binary_tree.insert(13.5)
+binary_tree.insert(1)
+binary_tree.insert(3)
+binary_tree.insert(5)
+binary_tree.insert(7)
+binary_tree.insert(5.5)
 binary_tree.print_tree
-binary_tree.delete(13)
+binary_tree.delete(4)
+binary_tree.delete(3)
 binary_tree.print_tree
-
-
-
-#binary_tree.print_tree
-#binary_tree.insert(10)
-
-# [1, 2, 3, 4, 5, 6, 7]
-# Middle: 4
-# Middle: 2
-# Middle: 1
-# Middle: 3
-# Middle: 6
-# Middle: 5
-# Middle: 7
