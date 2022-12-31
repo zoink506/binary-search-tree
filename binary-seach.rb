@@ -94,103 +94,18 @@ class Tree
     #   - Check if it is a leaf, one child or two children
     #   - Perform according to cases above
 
-    if !node.nil?
-      if node.data == value
-        puts "Node is equal to: #{value}"
+    
 
-        # Check how many children
-        if node.left.nil? && node.right.nil?
-          # no children
-          puts "#{node.data} has no children"
-          return 0
-
-        elsif !node.left.nil? && !node.right.nil?
-          # 2 children
-          puts "#{node.data} has 2 children"
-          return 2
-
-        elsif node.left.nil? || node.right.nil?
-          # 1 child
-          puts "#{node.data} has 1 child"
-          return 1
-
-        end
-
-        return nil
-      else
-        #puts node.data
-
-        if value < node.data
-          # LEFT NODE
-          left_node = delete(value, node.left) if !node.left.nil?
-          p "left_node: #{left_node}, current_node: #{node.data}"
-
-          if !left_node.nil?
-            # If not nil, then the left node is either 0, 1, or 2.
-            # It will only be 0, 1, or 2 if the left node is the value the user wants to delete
-
-            if left_node == 0
-              node.left = nil
-
-            elsif left_node == 1
-              #node.left = node.left.right
-              if node.right.left.nil? # if there is no left node in the left subtree, then the 1 child is in the right node in the subtree
-                node.right = node.left.right
-              elsif node.right.right.nil? # likewise, but left instead of right
-                node.left = node.left.left
-              end
-
-            elsif left_node == 2
-              # find node that is the next largest node other the deleted node
-              # go to the right subtree, then keep following the left subtrees until no left subtree is found
-              # replace the deleted node's value with the next largest node's value
-              
-            end
-
-          end
-
-          nil
-        elsif value > node.data
-          # RIGHT NODE
-          right_node = delete(value, node.right) if !node.right.nil?
-          p "right_node: #{right_node}, current_node: #{node.data}"
-
-          if !right_node.nil?
-            if right_node == 0
-              node.right = nil
-
-            elsif right_node == 1
-              #node.right = node.right.right
-              if node.right.left.nil? # if there is no left node in the right subtree, then the 1 child is in the right node in the subtree
-                node.right = node.right.right
-              elsif node.right.right.nil? # likewise, but left instead of right
-                node.left = node.right.left
-              end
-
-            elsif right_node == 2
-
-            end
-          end
-
-          nil
-        end
-      end
-    end
-  end
-
-  def find_largest_node(comparison_node, node)
-    # ...
-  end
 end
 
-binary_tree = Tree.new([1, 2, 3, 4, 5, 6, 7])
-binary_tree.insert(9)
-binary_tree.insert(10)
+binary_tree = Tree.new([2, 4, 6, 8, 10, 12, 14])
+binary_tree.insert(13)
+binary_tree.insert(15)
+binary_tree.insert(13.5)
 binary_tree.print_tree
-binary_tree.delete(7)
+binary_tree.delete(13)
 binary_tree.print_tree
-binary_tree.delete(9)
-binary_tree.print_tree
+
 
 
 #binary_tree.print_tree
