@@ -185,18 +185,68 @@ class Tree
   def level_order(queue = [@root], &block)
     # queue.push: add to back, queue.shift: remove from front
     
+    return_arr = []
+
     while !queue.empty?
-      p queue.map { |node| node.data }
       next_node = queue.shift
-      block.call(next_node)
+
+      if block_given?
+        block.call(next_node)
+      else
+        return_arr << next_node
+      end
+
       queue.push(next_node.left) if !next_node.left.nil?
       queue.push(next_node.right) if !next_node.right.nil?
-      puts "\n"
     end
 
-    puts "LOOP FINISHED"
-
+    return return_arr if !block_given?
+    return nil
   end
+
+  def preorder(node = @root, arr = [], &block)
+    # Root -> Left -> Right
+    if block_given?
+      block.call(node)
+      leftnode = preorder(node.left, arr, &block) if !node.left.nil?
+      rightnode = preorder(node.right, arr, &block) if !node.right.nil?
+    else
+      arr << node
+      leftnode = preorder(node.left, arr) if !node.left.nil?
+      rightnode = preorder(node.right, arr) if !node.right.nil?
+      return arr
+    end
+  end
+
+  def inorder(node = @root, arr = [], &block)
+    # Left -> Root -> Right
+    if block_given?
+      leftnode = inorder(node.left, arr, &block) if !node.left.nil?
+      block.call(node)
+      rightnode = inorder(node.right, arr, &block) if !node.right.nil?
+
+    else
+      leftnode = inorder(node.left, arr) if !node.left.nil?
+      arr << node
+      rightnode = inorder(node.right, arr) if !node.right.nil?
+      return arr
+    end
+  end
+
+  def postorder(node = @root, arr = [], &block)
+    # Left -> Right -> Root
+    if block_given?
+      leftnode = postorder(node.left, arr, &block) if !node.left.nil?
+      rightnode = postorder(node.right, arr, &block) if !node.right.nil?
+      block.call(node)
+    else
+      leftnode = postorder(node.left, arr) if !node.left.nil?
+      rightnode = postorder(node.right, arr) if !node.right.nil?
+      arr << node
+    end
+  end
+
+  
 end
 
 binary_tree = Tree.new([2, 4, 6, 8, 10, 12, 14])
@@ -207,5 +257,6 @@ binary_tree = Tree.new([2, 4, 6, 8, 10, 12, 14])
 #binary_tree.delete(3)
 binary_tree.print_tree
 
-print "\n\n"
-binary_tree.level_order { |node| puts node.data * 2 }
+print "\n"
+#p binary_tree.level_order([binary_tree.find(8)]).map { |node| node.data }
+p binary_tree.postorder.map { |node| node.data }
