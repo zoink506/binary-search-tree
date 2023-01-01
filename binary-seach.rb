@@ -181,17 +181,31 @@ class Tree
 
     end
   end
+
+  def level_order(queue = [@root], &block)
+    # queue.push: add to back, queue.shift: remove from front
+    
+    while !queue.empty?
+      p queue.map { |node| node.data }
+      next_node = queue.shift
+      block.call(next_node)
+      queue.push(next_node.left) if !next_node.left.nil?
+      queue.push(next_node.right) if !next_node.right.nil?
+      puts "\n"
+    end
+
+    puts "LOOP FINISHED"
+
+  end
 end
 
 binary_tree = Tree.new([2, 4, 6, 8, 10, 12, 14])
-binary_tree.insert(13)
-binary_tree.insert(15)
-binary_tree.insert(1)
-binary_tree.insert(3)
-binary_tree.insert(5)
-binary_tree.insert(7)
-binary_tree.insert(5.5)
+#binary_tree.insert(13)
+#binary_tree.insert(15)
+#binary_tree.print_tree
+#binary_tree.delete(4)
+#binary_tree.delete(3)
 binary_tree.print_tree
-binary_tree.delete(4)
-binary_tree.delete(3)
-binary_tree.print_tree
+
+print "\n\n"
+binary_tree.level_order { |node| puts node.data * 2 }
