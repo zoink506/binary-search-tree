@@ -246,7 +246,23 @@ class Tree
     end
   end
 
-  
+  def height(node = @root)
+    return 0 if node.nil?
+
+    left_height = height(node.left)
+    right_height = height(node.right)
+    return [left_height, right_height].max + 1
+  end
+
+  def depth(target, node = @root, count = 0)
+    return count + 1 if target == node.data
+
+    if target < node.data
+      depth(target, node.left, count + 1) if !node.left.nil?
+    elsif target > node.data
+      depth(target, node.right, count + 1) if !node.right.nil?
+    end
+  end
 end
 
 binary_tree = Tree.new([2, 4, 6, 8, 10, 12, 14])
@@ -259,4 +275,5 @@ binary_tree.print_tree
 
 print "\n"
 #p binary_tree.level_order([binary_tree.find(8)]).map { |node| node.data }
-p binary_tree.postorder.map { |node| node.data }
+#p binary_tree.postorder.map { |node| node.data }
+p binary_tree.depth(14)
