@@ -14,7 +14,7 @@ class Tree
     @root = build_tree(arr, 0, arr.length - 1)
   end
 
-  def build_tree(arr, arr_start, arr_end)
+  def build_tree(arr, arr_start = 0, arr_end = arr.length-1)
     return if arr_start > arr_end
     return :empty_array if arr.length <= 0
 
@@ -96,14 +96,14 @@ class Tree
 
     if value == node.data
       # Value to delete has been found
-      puts "Found node for delete(#{value}): #{node.data}"
+      #puts "Found node for delete(#{value}): #{node.data}"
       return amount_of_children(node)
 
     elsif value > node.data
       # Go right to find value to delete
-      puts "Going right at #{node.data}"
+      #puts "Going right at #{node.data}"
       rightnode = delete(value, node.right)
-      puts "current node: #{node.data}, rightnode: #{rightnode}"
+      #puts "current node: #{node.data}, rightnode: #{rightnode}"
 
       if rightnode == 0
         # 0 Children on node to the right
@@ -120,16 +120,16 @@ class Tree
       elsif rightnode == 2
         # 2 Children on node to the right
         largest_value = find_next_largest(node.right.right)
-        puts "largest_value: #{largest_value}, data: #{largest_value.data}"
+        #puts "largest_value: #{largest_value}, data: #{largest_value.data}"
         node.right.data = largest_value.data
 
       end
 
     elsif value < node.data
       # Go left to find value to delete
-      puts "Going left at #{node.data}"
+      #puts "Going left at #{node.data}"
       leftnode = delete(value, node.left)
-      puts "current node: #{node.data}, leftnode: #{leftnode}"
+      #puts "current node: #{node.data}, leftnode: #{leftnode}"
 
       if leftnode == 0
         # 0 Children on node to the left
@@ -166,17 +166,17 @@ class Tree
   def amount_of_children(node)
     if node.left.nil? && node.right.nil?
       # The node to delete has 0 children
-      puts "#{node.data} has 0 children"
+      #puts "#{node.data} has 0 children"
       return 0
 
     elsif !node.left.nil? && !node.right.nil?
       # The node 2 children
-      puts "#{node.data} has 2 children"
+      #puts "#{node.data} has 2 children"
       return 2
 
     elsif node.left.nil? || node.right.nil?
       # The node has 1 child, either left or right
-      puts "#{node.data} has 1 child"
+      #puts "#{node.data} has 1 child"
       return 1
 
     end
@@ -263,17 +263,70 @@ class Tree
       depth(target, node.right, count + 1) if !node.right.nil?
     end
   end
+
+  def balanced?(node = @root)
+    if node.nil?
+      #puts "Node nil, returning -1"
+      return -1
+    end
+
+    #puts "Going left at #{node.data}"
+    left_tree = balanced?(node.left)
+    return left_tree if left_tree == false
+
+    #puts "Going right at #{node.data}"
+    right_tree = balanced?(node.right)
+    return right_tree if right_tree == false
+
+    balance = (left_tree - right_tree).abs
+    #puts "(#{node.data}) left_tree - right_tree = #{balance}"
+
+    return false if balance > 1
+    return true if node == @root
+    balance
+  end
+
+  def rebalance
+    sorted_array = self.inorder.map { |node| node.data }
+    new_tree = build_tree(sorted_array)
+    @root = new_tree
+  end
 end
 
-binary_tree = Tree.new([2, 4, 6, 8, 10, 12, 14])
-#binary_tree.insert(13)
-#binary_tree.insert(15)
-#binary_tree.print_tree
-#binary_tree.delete(4)
-#binary_tree.delete(3)
-binary_tree.print_tree
+arr = Array.new(15) { rand(1..100) }
+binary_tree = Tree.new(arr)
 
+binary_tree.insert(100)
+binary_tree.insert(150)
+binary_tree.insert(115)
+binary_tree.print_tree
 print "\n"
-#p binary_tree.level_order([binary_tree.find(8)]).map { |node| node.data }
-#p binary_tree.postorder.map { |node| node.data }
-p binary_tree.depth(14)
+
+puts "Level Order: "
+binary_tree.level_order { |node| print "#{node.data} " }; print "\n\n"
+
+puts "Preorder: "
+binary_tree.preorder { |node| print "#{node.data} " }; print "\n\n"
+
+puts "Inorder: "
+binary_tree.inorder { |node| print "#{node.data} " }; print "\n\n"
+
+puts "Postorder: "
+binary_tree.postorder { |node| print "#{node.data} " }; print "\n\n"
+
+p binary_tree.balanced?
+binary_tree.rebalance
+binary_tree.print_tree
+print "\n"
+
+puts "Level Order: "
+binary_tree.level_order { |node| print "#{node.data} " }; print "\n\n"
+
+puts "Preorder: "
+binary_tree.preorder { |node| print "#{node.data} " }; print "\n\n"
+
+puts "Inorder: "
+binary_tree.inorder { |node| print "#{node.data} " }; print "\n\n"
+
+puts "Postorder: "
+binary_tree.postorder { |node| print "#{node.data} " }; print "\n\n"
